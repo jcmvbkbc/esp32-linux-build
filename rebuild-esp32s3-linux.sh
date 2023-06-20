@@ -50,6 +50,7 @@ pushd esp-idf
 . export.sh
 cd examples/get-started/linux_boot
 idf.py set-target esp32s3
+cp sdkconfig.defaults.esp32s3 sdkconfig
 idf.py build
 read -p 'ready to flash... press enter'
 idf.py flash
