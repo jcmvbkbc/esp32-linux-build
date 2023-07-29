@@ -58,7 +58,9 @@ idf.py set-target esp32s3
 cp sdkconfig.defaults.esp32s3 sdkconfig
 idf.py build
 read -p 'ready to flash... press enter'
-idf.py $SET_BAUDRATE flash
+while ! idf.py $SET_BAUDRATE flash ; do
+	read -p 'failure... press enter to try again'
+done
 popd
 
 #
