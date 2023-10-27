@@ -1,0 +1,24 @@
+[submodule "xtensa-dynconfig"]
+	path = xtensa-dynconfig
+	url = https://github.com/jcmvbkbc/xtensa-dynconfig
+	branch = original
+[submodule "config-esp32s3"]
+	path = esp32s3
+	url = https://github.com/jcmvbkbc/config-esp32s3
+	branch = master
+[submodule "crosstool-NG"]
+	path = crosstool-NG
+	url = https://github.com/jcmvbkbc/crosstool-NG.git
+	branch = xtensa-fdpic
+[submodule "buildroot"]
+	path = buildroot
+	url = https://github.com/jcmvbkbc/buildroot
+	branch = xtensa-2023.08-fdpic
+[submodule "esp-hosted"]
+	path = esp-hosted
+	url = https://github.com/jcmvbkbc/esp-hosted
+	branch = ipc
+[submodule "esp-idf"]
+	path = esp-idf
+	url = https://github.com/jcmvbkbc/esp-idf
+	branch = linux-5.0.
