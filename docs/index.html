@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Linux on ESP32-S3 installer</title>
+    <meta
+      name="description"
+      content="Easily allow users to install Linux on the ESP32-S3 board via web-installer."
+    />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="color-scheme" content="dark light" />
+    <style>
+      body {
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Ubuntu, sans-serif;
+        padding: 0;
+        margin: 0;
+        line-height: 1.4;
+      }
+      .content {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 12px;
+      }
+      h2 {
+        margin-top: 2em;
+      }
+      h3 {
+        margin-top: 1.5em;
+      }
+      a {
+        color: #03a9f4;
+      }
+      .invisible {
+        visibility: hidden;
+      }
+      .hidden {
+        display: none;
+      }
+      esp-web-install-button[install-unsupported] {
+        visibility: inherit;
+      }
+      .content pre {
+        max-width: 100%;
+        overflow-y: scroll;
+      }
+      .footer {
+        margin-top: 24px;
+        border-top: 1px solid #ccc;
+        padding-top: 24px;
+        text-align: center;
+      }
+      .footer .initiative {
+        font-style: italic;
+        margin-top: 16px;
+      }
+      table {
+        border-spacing: 0;
+      }
+      td {
+        padding: 8px;
+        border-bottom: 1px solid #ccc;
+      }
+      .radios li {
+        list-style: none;
+        line-height: 2em;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #333;
+          color: #fff;
+        }
+        a {
+          color: #58a6ff;
+        }
+      }
+    </style>
+    <script type="module" src="https://unpkg.com/esp-web-tools@8.0.1/dist/web/install-button.js?module"></script>
+  </head>
+  <body>
+    <div class="content">
+      <h2>ESP32-S3 Linux installer</h2>
+      <p>This is a web installer for Linux running on ESP32-S3. More information can be found <a href="http://wiki.osll.ru/doku.php/etc:users:jcmvbkbc:linux-xtensa:esp32s3">here</a>.</p>
+      <h3>Requirements</h3>
+      <ul>
+        <li>ESP32-S3 SoC, <a href="https://github.com/wuxx/nanoESP32-S3">this board</a> for example</li>
+        <li>8MB Flash (-N8)</li>
+        <li>8MB PSRAM (-R8)</li>
+      </ul>
+      <p>Select your option</p>
+      <ul class="radios">
+        <li>
+          <label><input type="radio" name="type" value="full-8" /> (8 MB) Full image</label>
+        </li>
+        <li>
+          <label><input type="radio" name="type" value="partial-8" />  (8 MB) Keep /etc folder</label>
+        </li>
+      </ul>
+      <p class="button-row" align="center">
+        <esp-web-install-button class="invisible"></esp-web-install-button>
+      </p>
+      <h3>Notes</h3>
+      <p>Some boards require manual download mode triggering, by pressing resetting the board while pressing IO0 button </p>
+      <p>If your board has two USB ports, you might need to use both. One for flashing, other to see Linux serial output</p>
+      <h3>Demo</h3>
+      <img src="https://github.com/anabolyc/esp32-linux-build/raw/master/docs/img/Screencast%20from%2028.10.2023%2021:54:48.gif" alt="Screencast" style="max-width: 100%; display: inline-block;" data-target="animated-image.originalImage">
+      <div class="footer">
+        <a href="https://github.com/anabolyc/esp32-linux-build">Source code</a> &mdash; Installer powered by <a href="https://esphome.github.io/esp-web-tools/">ESP Web Tools</a>.
+    </div>
+    <script>
+      document.querySelectorAll('input[name="type"]').forEach(radio =>
+        radio.addEventListener("change", () => {
+          const button = document.querySelector('esp-web-install-button');
+          button.manifest = `./manifest-${radio.value}.json`;
+          button.classList.remove('invisible');
+        }
+      ));
+    </script>
+  </body>
+</html>

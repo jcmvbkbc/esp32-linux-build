@@ -1,0 +1,6 @@
+{
+    "git.ignoredRepositories": [
+        "./esp-idf"
+    ],
+    "git.autoRepositoryDetection": "openEditors"
+}
