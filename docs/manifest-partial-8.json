@@ -1,0 +1,16 @@
+{
+  "name": "Linux on ESP32-S3",
+  "version": "1.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "firmware/bootloader.bin", "offset": 0 },
+        { "path": "firmware/partition-table.bin", "offset": 32768 },
+        { "path": "firmware/network_adapter.bin", "offset": 65536 },
+        { "path": "firmware/xipImage", "offset": 1179648 },
+        { "path": "firmware/rootfs.cramfs", "offset": 4718592 }
+      ]
+    }
+  ]
+}
