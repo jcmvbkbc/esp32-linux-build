@@ -14,7 +14,7 @@ SET_BAUDRATE='-b 2000000'
 
 CTNG_VER=xtensa-fdpic
 CTNG_CONFIG=xtensa-esp32s3-linux-uclibcfdpic
-BUILDROOT_VER=xtensa-2023.11-fdpic
+BUILDROOT_VER=xtensa-2024.02-fdpic
 BUILDROOT_CONFIG=esp32s3_defconfig
 ESP_HOSTED_VER=ipc-5.1.1
 ESP_HOSTED_CONFIG=sdkconfig.defaults.esp32s3

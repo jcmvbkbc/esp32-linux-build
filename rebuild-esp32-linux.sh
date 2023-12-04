@@ -14,7 +14,7 @@ SET_BAUDRATE='-b 1000000'
 
 CTNG_VER=xtensa-fdpic
 CTNG_CONFIG=xtensa-esp32-linux-uclibcfdpic
-BUILDROOT_VER=xtensa-2023.11-fdpic
+BUILDROOT_VER=xtensa-2024.02-fdpic
 BUILDROOT_CONFIG=esp32_defconfig
 ESP_BOOTLOADER_VER=linux-5.1.2
 ESP_BOOTLOADER_CONFIG=sdkconfig.defaults.esp32
