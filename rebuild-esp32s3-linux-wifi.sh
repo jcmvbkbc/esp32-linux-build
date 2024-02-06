@@ -32,6 +32,7 @@ export PATH=`pwd`/autoconf-2.71/root/bin:$PATH
 if [ -z "$keep_toolchain$keep_buildroot$keep_rootfs$keep_bootloader" ] ; then
 	rm -rf build
 else
+	[ -n "$keep_toolchain" ] || rm -rf build/crosstool-NG/builds/xtensa-esp32s3-linux-uclibcfdpic
 	[ -n "$keep_rootfs" ] || rm -rf build/build-buildroot-esp32s3
 	[ -n "$keep_buildroot" ] || rm -rf build/buildroot
 	[ -n "$keep_bootloader" ] || rm -rf build/esp-hosted
