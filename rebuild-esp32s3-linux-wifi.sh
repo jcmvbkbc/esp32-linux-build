@@ -3,11 +3,11 @@
 #
 # environment variables affecting the build:
 #
-# keep_toolchain=y	-- don't rebuild the toolchain, but rebuild everything else
-# keep_rootfs=y		-- don't reconfigure or rebuild rootfs from scratch. Would still apply overlay changes
-# keep_buildroot=y	-- don't redownload the buildroot, only git pull any updates into it
-# keep_bootloader=y	-- don't redownload the bootloader, only rebuild it
-# keep_etc=y		-- don't overwrite the /etc partition
+ keep_toolchain=y	#-- don't rebuild the toolchain, but rebuild everything else
+ keep_rootfs=y		#-- don't reconfigure or rebuild rootfs from scratch. Would still apply overlay changes
+ keep_buildroot=y	#-- don't redownload the buildroot, only git pull any updates into it
+# keep_bootloader=y	#-- don't redownload the bootloader, only rebuild it
+# keep_etc=y		#-- don't overwrite the /etc partition
 #
 
 SET_BAUDRATE='-b 2000000'
