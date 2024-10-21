@@ -1,3 +1,11 @@
 Install the following packages (Debian 12) before running the build scripts:
 
 autoconf automake bash bc bison build-essential cmake flex gawk git gperf help2man libncurses-dev libtool libtool-bin libusb-1.0-0 python3 python3-venv rsync texinfo unzip wget
+
+Build the default wifi-enabled configuration (devkit-c1-8m.conf, suitable for the Espressif devkit-c1 and similar boards with 8MB FLASH and 8MB PSRAM):
+
+./rebuild-esp32s3-linux-wifi.sh
+
+Build a specific wifi-enabled configuration (e.g. box3.conf, suitable for the Espressif Box-3 with 16MB FLASH and 16MB PSRAM):
+
+./rebuild-esp32s3-linux-wifi.sh -c box3.conf

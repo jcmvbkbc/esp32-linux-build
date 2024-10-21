@@ -14,10 +14,37 @@ SET_BAUDRATE='-b 2000000'
 
 CTNG_VER=xtensa-fdpic
 CTNG_CONFIG=xtensa-esp32s3-linux-uclibcfdpic
-BUILDROOT_VER=xtensa-2024.05-fdpic
-BUILDROOT_CONFIG=esp32s3_defconfig
+BUILDROOT_VER=xtensa-2024.08-fdpic
 ESP_HOSTED_VER=ipc-5.1.1
 ESP_HOSTED_CONFIG=sdkconfig.defaults.esp32s3
+
+function die()
+{
+	echo "$1"
+	exit 1
+}
+
+while : ; do
+	case "$1" in
+		-c)
+			conf="$2"
+			. "$conf"
+			shift 2
+			named_config=1
+			;;
+		*)
+			break
+			;;
+	esac
+done
+
+if [ -z "$named_config" ] ; then
+	[ -f default.conf ] || { echo "Making devkit-c1-8m the default configuration" ; ln -s devkit-c1-8m.conf default.conf ; }
+	. default.conf || die "No config selected and default.conf couldn't be loaded"
+fi
+
+[ -n "$BUILDROOT_CONFIG" ] || die "BUILDROOT_CONFIG is missing"
+[ -n "$ESP_HOSTED_CONFIG" ] || die "ESP_HOSTED_CONFIG is missing"
 
 if [ ! -d autoconf-2.71/root/bin ] ; then
 	wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz
@@ -33,7 +60,7 @@ if [ -z "$keep_toolchain$keep_buildroot$keep_rootfs$keep_bootloader" ] ; then
 	rm -rf build
 else
 	[ -n "$keep_toolchain" ] || rm -rf build/crosstool-NG/builds/xtensa-esp32s3-linux-uclibcfdpic
-	[ -n "$keep_rootfs" ] || rm -rf build/build-buildroot-esp32s3
+	[ -n "$keep_rootfs" ] || rm -rf build/build-buildroot-$BUILDROOT_CONFIG
 	[ -n "$keep_buildroot" ] || rm -rf build/buildroot
 	[ -n "$keep_bootloader" ] || rm -rf build/esp-hosted
 fi
@@ -73,14 +100,14 @@ else
 	git pull
 	popd
 fi
-if [ ! -d build-buildroot-esp32s3 ] ; then
-	nice make -C buildroot O=`pwd`/build-buildroot-esp32s3 $BUILDROOT_CONFIG
-	buildroot/utils/config --file build-buildroot-esp32s3/.config --set-str TOOLCHAIN_EXTERNAL_PATH `pwd`/crosstool-NG/builds/xtensa-esp32s3-linux-uclibcfdpic
-	buildroot/utils/config --file build-buildroot-esp32s3/.config --set-str TOOLCHAIN_EXTERNAL_PREFIX '$(ARCH)-esp32s3-linux-uclibcfdpic'
-	buildroot/utils/config --file build-buildroot-esp32s3/.config --set-str TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX '$(ARCH)-esp32s3-linux-uclibcfdpic'
+if [ ! -d build-buildroot-$BUILDROOT_CONFIG ] ; then
+	nice make -C buildroot O=`pwd`/build-buildroot-$BUILDROOT_CONFIG ${BUILDROOT_CONFIG}_defconfig || die "Could not apply buildroot config ${BUILDROOT_CONFIG}_defconfig"
+	buildroot/utils/config --file build-buildroot-$BUILDROOT_CONFIG/.config --set-str TOOLCHAIN_EXTERNAL_PATH `pwd`/crosstool-NG/builds/xtensa-esp32s3-linux-uclibcfdpic
+	buildroot/utils/config --file build-buildroot-$BUILDROOT_CONFIG/.config --set-str TOOLCHAIN_EXTERNAL_PREFIX '$(ARCH)-esp32s3-linux-uclibcfdpic'
+	buildroot/utils/config --file build-buildroot-$BUILDROOT_CONFIG/.config --set-str TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX '$(ARCH)-esp32s3-linux-uclibcfdpic'
 fi
-nice make -C buildroot O=`pwd`/build-buildroot-esp32s3
-[ -f build-buildroot-esp32s3/images/xipImage -a -f build-buildroot-esp32s3/images/rootfs.cramfs -a -f build-buildroot-esp32s3/images/etc.jffs2 ] || exit 1
+nice make -C buildroot O=`pwd`/build-buildroot-$BUILDROOT_CONFIG
+[ -f build-buildroot-$BUILDROOT_CONFIG/images/xipImage -a -f build-buildroot-$BUILDROOT_CONFIG/images/rootfs.cramfs -a -f build-buildroot-$BUILDROOT_CONFIG/images/etc.jffs2 ] || exit 1
 
 #
 # bootloader
@@ -92,7 +119,7 @@ cd esp-idf
 . export.sh
 cd ../network_adapter
 idf.py set-target esp32s3
-cp $ESP_HOSTED_CONFIG sdkconfig
+cp $ESP_HOSTED_CONFIG sdkconfig || die "Could not apply IDF config $ESP_HOSTED_CONFIG"
 idf.py build
 read -p 'ready to flash... press enter'
 while ! idf.py $SET_BAUDRATE flash ; do
@@ -103,9 +130,9 @@ popd
 #
 # flash
 #
-parttool.py $SET_BAUDRATE write_partition --partition-name linux  --input build-buildroot-esp32s3/images/xipImage
-parttool.py $SET_BAUDRATE write_partition --partition-name rootfs --input build-buildroot-esp32s3/images/rootfs.cramfs
+parttool.py $SET_BAUDRATE write_partition --partition-name linux  --input build-buildroot-$BUILDROOT_CONFIG/images/xipImage
+parttool.py $SET_BAUDRATE write_partition --partition-name rootfs --input build-buildroot-$BUILDROOT_CONFIG/images/rootfs.cramfs
 if [ -z "$keep_etc" ] ; then
 	read -p 'ready to flash /etc... press enter'
-	parttool.py $SET_BAUDRATE write_partition --partition-name etc --input build-buildroot-esp32s3/images/etc.jffs2
+	parttool.py $SET_BAUDRATE write_partition --partition-name etc --input build-buildroot-$BUILDROOT_CONFIG/images/etc.jffs2
 fi
