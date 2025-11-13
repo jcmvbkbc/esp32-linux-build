@@ -9,6 +9,10 @@
 # keep_bootloader=y	-- don't redownload the bootloader, only rebuild it
 # keep_etc=y		-- don't overwrite the /etc partition
 #
+# reconfigure_kernel=y	-- reconfigure kernel
+# reconfigure_rootfs=y	-- reconfigure rootfs
+# reconfigure_boot=y	-- reconfigure bootloader
+#
 
 SET_BAUDRATE='-b 2000000'
 
@@ -106,6 +110,14 @@ if [ ! -d build-buildroot-$BUILDROOT_CONFIG ] ; then
 	buildroot/utils/config --file build-buildroot-$BUILDROOT_CONFIG/.config --set-str TOOLCHAIN_EXTERNAL_PREFIX '$(ARCH)-esp32s3-linux-uclibcfdpic'
 	buildroot/utils/config --file build-buildroot-$BUILDROOT_CONFIG/.config --set-str TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX '$(ARCH)-esp32s3-linux-uclibcfdpic'
 fi
+if [ -n "$reconfigure_rootfs" ] ; then
+	nice make -C buildroot O=`pwd`/build-buildroot-$BUILDROOT_CONFIG menuconfig
+	nice make -C buildroot O=`pwd`/build-buildroot-$BUILDROOT_CONFIG savedefconfig
+fi
+if [ -n "$reconfigure_kernel" ] ; then
+	nice make -C buildroot O=`pwd`/build-buildroot-$BUILDROOT_CONFIG linux-menuconfig
+	nice make -C buildroot O=`pwd`/build-buildroot-$BUILDROOT_CONFIG linux-savedefconfig
+fi
 nice make -C buildroot O=`pwd`/build-buildroot-$BUILDROOT_CONFIG
 [ -f build-buildroot-$BUILDROOT_CONFIG/images/xipImage -a -f build-buildroot-$BUILDROOT_CONFIG/images/rootfs.cramfs -a -f build-buildroot-$BUILDROOT_CONFIG/images/etc.jffs2 ] || exit 1
 
@@ -120,6 +132,10 @@ cd esp-idf
 cd ../network_adapter
 idf.py set-target esp32s3
 cp $ESP_HOSTED_CONFIG sdkconfig || die "Could not apply IDF config $ESP_HOSTED_CONFIG"
+if [ -n "$reconfigure_boot" ] ; then
+	idf.py menuconfig
+	cp sdkconfig $ESP_HOSTED_CONFIG
+fi
 idf.py build
 read -p 'ready to flash... press enter'
 while ! idf.py $SET_BAUDRATE flash ; do
