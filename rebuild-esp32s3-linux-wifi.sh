@@ -79,7 +79,7 @@ if [ ! -f xtensa-dynconfig/esp32s3.so ] ; then
 	git clone https://github.com/jcmvbkbc/config-esp32s3 esp32s3
 	make -C xtensa-dynconfig ORIG=1 CONF_DIR=`pwd` esp32s3.so
 fi
-export XTENSA_GNU_CONFIG=`pwd`/xtensa-dynconfig/esp32s3.so
+export XTENSA_GNU_CONFIG=`pwd`/xtensa-dynconfig/esp32s3.so # make sure this environment variable is set for all commands involving building or using the toolchain
 
 #
 # toolchain

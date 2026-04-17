@@ -51,7 +51,7 @@ if [ ! -f xtensa-dynconfig/esp32.so ] ; then
 	sed -i 's/\(XSHAL_ABI\s\+\)XTHAL_ABI_WINDOWED/\1XTHAL_ABI_CALL0/' esp32/{binutils,gcc}/xtensa-config.h
 	make -C xtensa-dynconfig ORIG=1 CONF_DIR=`pwd` esp32.so
 fi
-export XTENSA_GNU_CONFIG=`pwd`/xtensa-dynconfig/esp32.so
+export XTENSA_GNU_CONFIG=`pwd`/xtensa-dynconfig/esp32.so # make sure this environment variable is set for all commands involving building or using the toolchain
 
 #
 # toolchain
